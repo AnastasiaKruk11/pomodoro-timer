@@ -8,12 +8,15 @@ const timerClock = timer.innerText.split(':');
 
 let minutes = timerClock[0];
 let seconds = timerClock[1];
+let pomodoroTimer;
+let mode = 'pomodoro';
+let activity = 'stop';
 
-function startCount(defaultTime) {
+startBtn.addEventListener('click', function() {
 
-    startBtn.addEventListener('click', function() {
-
-        let pomodoroTimer = setInterval(() => {
+    if (activity === 'stop') {
+        activity = 'run';
+        pomodoroTimer = setInterval(() => {
 
                 startBtn.innerText = 'stop';
 
@@ -21,7 +24,11 @@ function startCount(defaultTime) {
 
                 if (minutes <= 0 && seconds <= 0) {
                     clearInterval(pomodoroTimer);
-                    minutes = defaultTime;
+                    if (mode === 'pomodoro') {
+                        minutes = 25;
+                    } else {
+                        minutes = 5;
+                    };
                     seconds = 0;
                     startBtn.innerText = 'start';
 
@@ -39,50 +46,54 @@ function startCount(defaultTime) {
                 if (minutes < 10) {
                     timer.innerText = `0${minutes}:${seconds}`;
                 };
-
-
-                function clearTimer() {
-                    clearInterval(pomodoroTimer);
-                    startBtn.innerText = 'start';
-                    minutes = defaultTime;
-                    seconds = 0;
-                    if (minutes < 10) {
-                        timer.innerText = `0${minutes}:0${seconds}`;
-                    } else {
-                        timer.innerText = `${minutes}:0${seconds}`;
-                    }
-                }
-
-                resetBtn.addEventListener('click', clearTimer);
-                startBtn.addEventListener('click', clearTimer);
-
             },
-            1000);
-    });
+            10);
+
+    } else {
+        activity = 'stop';
+        clearInterval(pomodoroTimer);
+        startBtn.innerText = 'start';
+    };
+});
+
+function clearTimer() {
+    clearInterval(pomodoroTimer);
+    startBtn.innerText = 'start';
+    if (mode === 'pomodoro') {
+        minutes = 25;
+    } else {
+        minutes = 5;
+    }
+    seconds = 0;
+    if (minutes < 10) {
+        timer.innerText = `0${minutes}:0${seconds}`;
+    } else {
+        timer.innerText = `${minutes}:0${seconds}`;
+    }
 }
 
-startBtn.addEventListener('click', startCount(25));
+resetBtn.addEventListener('click', clearTimer);
 
-pomodoroBtn.onclick = function() {
+pomodoroBtn.addEventListener('click', function() {
 
-    clearInterval(pomodoroTimer);
+    clearTimer();
+    mode = 'pomodoro';
     minutes = 25;
     seconds = 0;
     timer.innerText = `${minutes}:0${seconds}`;
     breakBtn.classList.remove('active');
     pomodoroBtn.classList.add('active');
 
-    startCount(25);
+});
 
-};
+breakBtn.addEventListener('click', function() {
 
-breakBtn.onclick = function() {
-
+    clearTimer();
+    mode = 'rest';
     breakBtn.classList.add('active');
     pomodoroBtn.classList.remove('active');
     minutes = 5;
     seconds = 0;
     timer.innerText = `0${minutes}:0${seconds}`;
 
-    startCount(5);
-};
+});
