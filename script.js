@@ -23,15 +23,7 @@ startBtn.addEventListener('click', function() {
                 seconds--;
 
                 if (minutes <= 0 && seconds <= 0) {
-                    clearInterval(pomodoroTimer);
-                    if (mode === 'pomodoro') {
-                        minutes = 25;
-                    } else {
-                        minutes = 5;
-                    };
-                    seconds = 0;
-                    startBtn.innerText = 'start';
-
+                    clearTimer();
                 } else if (seconds < 0) {
                     minutes--;
                     seconds = 59;
@@ -58,6 +50,7 @@ startBtn.addEventListener('click', function() {
 
 function clearTimer() {
     clearInterval(pomodoroTimer);
+    activity = 'stop';
     startBtn.innerText = 'start';
     if (mode === 'pomodoro') {
         minutes = 25;
